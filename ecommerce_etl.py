@@ -129,29 +129,6 @@ def clean_data(data):
 
 
 
-# POSTGRES CONNECTION
-
-def create_server_connection():    
-    connection = None
-    try:
-
-        connection = psycopg2.connect(
-            database='d2b_assessment',
-            user='byroneji4734',
-            password='npF5SlOzvW',
-            host='d2b-internal-assessment-dwh.cxeuj0ektqdz.eu-central-1.rds.amazonaws.com',
-            port='5432'
-        )
-        
-        print("PostgreSql Database connection successful")
-    except Error as err:
-        print(f"Error: '{err}'")
-
-    return connection
-
-
-
-
 
 # DIRECTLY LOAD JSON INTO POSTGRES AND SKIP DUPLICATES
 
@@ -159,11 +136,12 @@ def load_json_to_postgres(json_data):
     
 
     conn = psycopg2.connect(
-        database='d2b_assessment',
-        user='byroneji4734',
-        password='npF5SlOzvW',
-        host='d2b-internal-assessment-dwh.cxeuj0ektqdz.eu-central-1.rds.amazonaws.com',
-        port='5432')
+        database=database,
+        user=user,
+        password=password,
+        host= host,
+        port='5432'
+    )
 
     
     clean_json = json.dumps(json_data)
