@@ -1,10 +1,10 @@
 # E-COMMERCE DATA PIPELINE WITH AIRFLOW
-This is aN ETL data pipeline for an e-commerce website that involves web scraping, data transformation, and loading the transformed data into a PostgreSQL database. The pipeline is built using Apache Airflow, an open-source platform to programmatically author, schedule, and monitor workflows.
+This is an ETL data pipeline for an e-commerce website that involves web scraping, data transformation, and loading the transformed data into a PostgreSQL database. The pipeline is built using Apache Airflow, an open-source platform to programmatically author, schedule, and monitor workflows.
 
 ## INSTALLATION
 
 ### Clone the repository:
-git clone https://github.com/{username}/{repository}.git
+git clone https://github.com/lordbnn/ecommerce_etl.git
 
 ### Install the required packages:
 pip install -r requirements.txt
