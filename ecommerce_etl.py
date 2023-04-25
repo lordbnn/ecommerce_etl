@@ -1,6 +1,3 @@
-
-#MULTIPLE PAGES
-
 #File format required
 import json
 
@@ -16,7 +13,7 @@ from psycopg2 import extras
  
 
 
-#MULTIPLE PAGES
+#ALL-PRODUCTS PAGES
 
 import json
 import time
