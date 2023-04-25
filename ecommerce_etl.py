@@ -14,12 +14,20 @@ import time
 import psycopg2
 from psycopg2 import extras
  
-   
-   
-  #SINGLE PAGE SCRAPING
+
+
+#MULTIPLE PAGES
+
+import json
+import time
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
 def scrape_jumia():
-    # Define the search URL
-    url = 'https://www.jumia.com.ng/all-products/'
+    # Define the base search URL
+    base_url = 'https://www.jumia.com.ng/all-products/'
 
     # Setup driver
     options = webdriver.ChromeOptions()
@@ -27,59 +35,60 @@ def scrape_jumia():
     options.add_argument('--no-sandbox')
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
 
-    # Navigate to the search results page
-    driver.get(url)
-    time.sleep(5)  # Wait for page to load
-    #print(driver.page_source)
-
-    # Extract product details
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    # Extract product details from each page
     products = []
-    for product in soup.find('div', class_='-paxs row _no-g _4cl-3cm-shs'):
-        product_dict = {}
-        item_name = product.find('h3', class_='name')
-        if item_name is not None:
-            product_dict['product'] = item_name.text.strip()
-        else:
-            product_dict['product'] = ''
-        product_brand = product.find('a', {'class': 'core'})
-        if product_brand is not None:
-            product_dict['brand'] = product_brand['data-brand']
-        else:
-            product_dict['brand'] = ''            
-        product_category = product.find('a', {'class': 'core'})
-        if product_category is not None:
-            product_dict['category'] = product_category['data-category']
-        else:
-            product_dict['category'] = ''
-        product_price = product.find('div', class_='prc')
-        if product_price is not None:
-            product_price= product_price.text.strip()
-            #Remove the Naira symbols
-            product_dict['price'] = product_price.replace('\u20a6', '').replace(',', '').strip()
-        else:
-            product_dict['price'] = ''
-        rating = product.find('div', class_='stars _s')
-        if rating is not None:
-            product_dict['ratings'] = rating.text.strip().split(' ')[0]
-        else:
-            product_dict['ratings'] = ''
-            
-        item_reviews = product.find('div', class_='rev')
-        if rating is not None:
-            product_dict['reviews'] = item_reviews.text.split('(')[-1].replace(')',' ').strip()
-        else:
-            product_dict['reviews'] = '' 
-            
-            
-        # Add any other relevant details here
-        products.append(product_dict)
+    for page in range(1, 50):
+        # Navigate to the search results page
+        url = f'{base_url}?page={page}'
+        driver.get(url)
+        time.sleep(30)  # Wait for page to load
+
+        # Extract product details
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+        for product in soup.find('div', class_='-paxs row _no-g _4cl-3cm-shs'):
+            product_dict = {}
+            item_name = product.find('h3', class_='name')
+            if item_name is not None:
+                product_dict['product'] = item_name.text.strip()
+            else:
+                product_dict['product'] = ''
+            product_brand = product.find('a', {'class': 'core'})
+            if product_brand is not None:
+                product_dict['brand'] = product_brand['data-brand']
+            else:
+                product_dict['brand'] = ''            
+            product_category = product.find('a', {'class': 'core'})
+            if product_category is not None:
+                product_dict['category'] = product_category['data-category']
+            else:
+                product_dict['category'] = ''
+            product_price = product.find('div', class_='prc')
+            if product_price is not None:
+                product_price= product_price.text.strip()     
+                #Remove the Naira symbols
+                product_dict['price'] = product_price.replace('\u20a6', '').replace(',', '').strip()
+            else:
+                product_dict['price'] = ''
+            rating = product.find('div', class_='stars _s')
+            if rating is not None:
+                product_dict['ratings'] = rating.text.strip().split(' ')[0]
+            else:
+                product_dict['ratings'] = ''
+                                
+            reviews = product.find('div', class_='rev')
+            if rating is not None:
+                product_dict['reviews'] = reviews.text.split('(')[-1].replace(')',' ').strip()
+            else:
+                product_dict['reviews'] = ''                
+            # Add any other relevant details here
+            products.append(product_dict)
         
     # Close the browser
     driver.quit()
 
     # Output the result as JSON
     return json.dumps(products)
+ 
 
 
     
