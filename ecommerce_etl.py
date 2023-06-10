@@ -34,7 +34,7 @@ def scrape_jumia():
 
     # Extract product details from each page
     products = []
-    for page in range(1, 50):
+    for page in range(1, 51):
         # Navigate to the search results page
         url = f'{base_url}?page={page}'
         driver.get(url)
